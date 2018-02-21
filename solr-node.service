@@ -1,0 +1,17 @@
+[Unit]
+Description=Solr full text search engine
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/opt/solr/run/solr-8983.pid
+User=solr
+Group=solr
+PrivateTmp=true
+Environment=SOLR_PID_DIR=/opt/solr/run
+ExecStart=/usr/bin/solr start -a '-Xloggc:/opt/solr/server/logs/solr-garbage-collector.log'
+ExecStop=/usr/bin/solr stop
+TimeoutSec=210s
+
+[Install]
+WantedBy=multi-user.target

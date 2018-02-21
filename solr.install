@@ -1,0 +1,55 @@
+post_install() {
+  post_upgrade
+}
+
+pre_upgrade() {
+  # Stop solr{,-cloud}.service if it's active. We'll restart it after upgrade.
+  local _active_daemon=/tmp/.solr_daemon
+  local _active_dcloud=/tmp/.solr_dcloud
+  systemctl daemon-reload
+  if [[ $(systemctl is-active solr-node.service) ]]; then
+    systemctl --quiet stop solr-node.service && touch ${_active_daemon}
+  elif [ -f ${_active_daemon} ]; then
+    rm --force ${_active_daemon}
+  fi
+  if [[ $(systemctl is-active solr-cloud.service) ]]; then
+    systemctl --quiet stop solr-cloud.service && touch ${_active_dcloud}
+  elif [[ -f ${_active_dcloud} ]]; then
+    rm --force ${_active_dcloud}
+  fi
+}
+
+post_upgrade() {
+  # Create solr user and group.
+  getent group solr >/dev/null 2>&1 || groupadd --gid 521 solr &>/dev/null
+  getent passwd solr >/dev/null 2>&1 || useradd --gid 521 --home-dir /opt/solr --shell /usr/bin/nologin --uid 521 solr &>/dev/null
+
+  # Start solr{,-cloud}.service if it was active before upgrade.
+  local _active_daemon=/tmp/.solr_daemon
+  local _active_dcloud=/tmp/.solr_dcloud
+  systemctl daemon-reload
+  if [[ -f ${_active_daemon} ]]; then
+    systemctl --quiet start solr-node.service
+    rm --force ${_active_daemon}
+  fi
+  if [[ -f ${_active_dcloud} ]]; then
+    systemctl --quiet start solr-cloud.service
+    rm --force ${_active_dcloud}
+  fi
+}
+
+pre_remove() {
+  # Stop solr{,-cloud}.service if it's active.
+  if [[ $(systemctl is-active solr-node.service) ]]; then
+    systemctl --quiet stop solr-node.service
+  fi
+  if [[ $(systemctl is-active solr-cloud.service) ]]; then
+    systemctl --quiet stop solr-cloud.service
+  fi
+  if getent passwd solr >/dev/null 2>&1; then
+    userdel solr
+  fi
+  if getent group solr >/dev/null 2>&1; then
+    groupdel solr
+  fi
+}
