@@ -7,7 +7,7 @@ pkgname=solr7
 _pkgname=solr
 pkgdesc="Popular, blazing-fast, open source enterprise search platform built on Apache Lucene"
 
-pkgver=7.2.1
+pkgver=7.6.0
 pkgrel=1
 
 arch=('any')
@@ -29,10 +29,10 @@ source=(
     "${_pkgname}-node.service"
     "${_aptjar}"
 )
-sha256sums=(
-    '1dbe8dda842d2008210c0c56d56b714713444fb4e05390bb0bcdec29cf957748'
-    '7513939d070430203817de4e1384b05506645db2243efb018d635c77a8d49abd'
-    'f79e064d51adea967bfb2cc38ad0035082edb4e55ef5dd4b9c00a209666b1cd3'
+sha512sums=(
+    'd11545c5ac782116b53622130634adfca2d9f85271a6d99c6ae34b1d41e9625fbf8134572ce3f2b7d55b749b34adc05b303cb2d4bb6e3dca73296726dbb21b02'
+    '968403a93ba9c012eabdbbf14f4090bde326668b5791f3ede4b47f281583a84e044abc0021959e0209e3715cd1ba06e3cf9be0c5d48ad62ffffd02f533bfdb2d'
+    'ee2e22a4c425bbda5d081bd7bd5604d515af4c547f42fda08fcbef01567268d11419bde399cc5b15c318600de1d07787fea10abfebd5134d983ebb86f580cb33'
     'SKIP'
 )
 noextract=(
